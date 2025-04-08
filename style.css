@@ -82,9 +82,9 @@ body {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    margin-top: 15px;
+    margin-top: 10px;
     width: 100%;
-    padding-left: 20px;
+    padding-left: 10px;
 }
 
 /* 症状選択肢用のスタイル、質問ID 2.1のみに適用 */
@@ -94,15 +94,15 @@ body {
     flex-wrap: wrap;
     align-items: center;
     justify-content: flex-start;
-    gap: 10px;
-    margin-top: 15px;
+    gap: 5px;
+    margin-top: 10px;
     width: 100%;
-    padding-left: 20px;
+    padding-left: 10px;
 }
 
 .question-2-1 .option-button {
     width: auto;
-    margin: 5px;
+    margin: 3px;
     white-space: nowrap;
 }
 
@@ -110,7 +110,7 @@ body {
 .question-2-1 .option-row {
     display: inline-flex;
     width: auto;
-    margin: 5px;
+    margin: 3px;
     flex-wrap: nowrap;
 }
 
@@ -123,16 +123,16 @@ body {
     background-color: #f7f7f7;
     border: 2px solid #e6e6e6;
     border-radius: 20px;
-    padding: 12px 18px; /* 大きめのパディング */
-    margin: 6px 0;
+    padding: 8px 14px;
+    margin: 4px 0;
     width: 90%;
     text-align: left;
     cursor: pointer;
-    font-size: 20px; /* フォントサイズをさらに大きく */
+    font-size: 18px;
     transition: all 0.3s ease;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     position: relative; /* 読み上げボタン配置のための相対位置 */
-    padding-right: 40px; /* 読み上げボタン用のスペース */
+    padding-right: 36px; /* 読み上げボタン用のスペース */
 }
 
 /* 選択肢内の読み上げボタン用スタイル */
@@ -390,28 +390,29 @@ h3 {
 /* レスポンシブ対応 */
 @media (max-width: 768px) {
     body {
-        padding: 10px;
+        padding: 5px;
         font-size: 16px;
     }
 
     .chat-header {
         font-size: 20px;
-        padding: 12px 15px;
+        padding: 10px 12px;
     }
 
     .message-content {
         max-width: 85%;
-        padding: 12px 15px;
+        padding: 10px 12px;
         font-size: 16px;
     }
 
     .option-button {
-        padding: 10px 15px;
+        padding: 8px 12px;
         font-size: 16px;
+        margin: 3px 0;
     }
 
     #startButton, #showResultButton {
-        padding: 12px 25px;
+        padding: 10px 20px;
         font-size: 18px;
     }
 
@@ -452,8 +453,8 @@ h3 {
 /* フォーム入力要素のスタイル */
 .text-input {
     width: 90%;
-    margin: 15px 0 15px 20px;
-    padding: 15px;
+    margin: 10px 0 10px 10px;
+    padding: 12px;
     border: 2px solid #ddd;
     border-radius: 10px;
     font-size: 18px; /* 大きめのフォント */
@@ -682,7 +683,7 @@ h3 {
 .numeric-button {
     flex: 1;
     min-width: 34px;
-    height: 34px;
+    height: 50px; /* 高さを1.5倍程度に拡大（34px→50px） */
     margin: 0 1px;
     border: 1px solid #ddd;
     border-radius: 50%;
@@ -701,7 +702,7 @@ h3 {
 @media (max-width: 480px) {
     .numeric-button {
         min-width: 30px;
-        height: 30px;
+        height: 45px; /* 高さを1.5倍程度に拡大（30px→45px） */
         font-size: 22px;
         margin: 0 1px;
     }
@@ -787,6 +788,7 @@ h3 {
     transition: all 0.2s;
     flex: 0 0 auto;
     margin: 0;
+    text-align: center; /* テキストを中央揃えに */
 }
 
 .symptom-button:hover {
@@ -809,13 +811,14 @@ h3 {
     .symptom-button {
         padding: 6px 12px;
         font-size: 14px;
+        text-align: center; /* レスポンシブ対応でも中央揃えを維持 */
     }
 }
 
 /* 複数選択肢のスタイル */
 .multiple-choice-container {
-    margin: 15px 20px;
-    padding: 15px;
+    margin: 10px 10px;
+    padding: 10px;
     background-color: white;
     border-radius: 10px;
     border: 1px solid #ddd;

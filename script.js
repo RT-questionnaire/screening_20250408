@@ -175,11 +175,11 @@ $(document).ready(function() {
         }, 600);
         
         // 画面全体も適切な位置までスクロール
-        const $lastMessage = $('.message:last-child, .options:last-child, .text-input-container:last-child, .vas-container:last-child');
+        const $lastMessage = $('.message:last-child, .options:last-child, .text-input-container:last-child, .vas-container:last-child, .multiple-choice-container:last-child, .numeric-buttons-container:last-child, .symptom-buttons-container:last-child');
         if ($lastMessage.length) {
             const bottomPosition = $lastMessage.offset().top + $lastMessage.outerHeight();
             const windowHeight = $(window).height();
-            const targetScroll = bottomPosition - windowHeight + 100; // 余白を100px確保
+            const targetScroll = bottomPosition - windowHeight + 200; // 余白を200pxに増やして確実にコンテナの末尾までスクロール
             
             $('html, body').animate({
                 scrollTop: Math.max(targetScroll, 0)
@@ -299,6 +299,8 @@ $(document).ready(function() {
             setTimeout(() => {
                 currentQuestionIndex++;
                 showQuestion(currentQuestionIndex);
+                // スクロール処理を追加
+                scrollToLatestContent();
             }, 800);
             return;
         }
@@ -309,6 +311,8 @@ $(document).ready(function() {
         // 選択肢を表示
         setTimeout(() => {
             createSubItemOptions(questionIndex, subIndex);
+            // スクロール処理を追加
+            scrollToLatestContent();
         }, 500);
     }
     
@@ -522,12 +526,16 @@ $(document).ready(function() {
                             // currentQuestionIndexを2つ進める（2.1をスキップ）
                             currentQuestionIndex += 2;
                             showQuestion(currentQuestionIndex);
+                            // スクロール処理を追加
+                            scrollToLatestContent();
                         }, 800);
                     } else {
                         // 通常通り次の質問へ
                         setTimeout(() => {
                             currentQuestionIndex++;
                             showQuestion(currentQuestionIndex);
+                            // スクロール処理を追加
+                            scrollToLatestContent();
                         }, 800);
                     }
                 }
@@ -760,12 +768,16 @@ $(document).ready(function() {
                     setTimeout(() => {
                         currentQuestionIndex += 2; // 質問ID 1をスキップ
                         showQuestion(currentQuestionIndex);
+                        // スクロール処理を追加
+                        scrollToLatestContent();
                     }, 800);
                 } else {
                     // 通常通り次の質問へ
                     setTimeout(() => {
                         currentQuestionIndex++;
                         showQuestion(currentQuestionIndex);
+                        // スクロール処理を追加
+                        scrollToLatestContent();
                     }, 800);
                 }
             }
@@ -878,6 +890,8 @@ $(document).ready(function() {
                     setTimeout(() => {
                         currentQuestionIndex++;
                         showQuestion(currentQuestionIndex);
+                        // スクロール処理を追加
+                        scrollToLatestContent();
                     }, 800);
                 }
             } else {
@@ -969,6 +983,8 @@ $(document).ready(function() {
             setTimeout(() => {
                 currentQuestionIndex++;
                 showQuestion(currentQuestionIndex);
+                // スクロール処理を追加
+                scrollToLatestContent();
             }, 800);
         });
         
@@ -1093,51 +1109,54 @@ $(document).ready(function() {
     // 結果のテキスト生成関数
     function generateFormattedText(data) {
         let text = "";
-        let hasAlert = false;
 
         // 調査日時
-        text += `調査日時：${new Date().toLocaleString('ja-JP')}\n\n`;
+        text += `調査日時：${new Date().toLocaleString('ja-JP')}<br>`;
 
         // 回答者
         if (relationshipAnswer) {
-            text += `回答者：${relationshipAnswer}\n\n`;
+            text += `回答者：${relationshipAnswer}<br>`;
         }
 
         // 相談したい事項
         if (data[1.1] && data[1.1].selectedOptions) {
-            text += `設問1.1：${data[1.1].selectedOptions.join('、')}\n`;
+            text += `質問1.1：${data[1.1].selectedOptions.join('、')}<br>`;
         }
 
         // その他の相談事項
         if (data[1]) {
-            text += `設問1：${data[1]}\n`;
+            text += `質問1：${data[1]}<br>`;
         }
 
         // からだの症状
         if (data[2]) {
-            const symptomLevel = data[2];
-            // 2以上の場合はマーク
-            const needsAttention = parseInt(symptomLevel) >= 2;
-            if (needsAttention) hasAlert = true;
-            text += `設問2：${symptomLevel}${needsAttention ? '　●' : ''}\n`;
+            text += `質問2：${data[2]}<br>`;
         }
         
         // 症状詳細
         if (data[2.1]) {
-            text += `設問2.1：${data[2.1]}\n`;
+            // オブジェクト形式の場合は selectedOptions を表示
+            if (typeof data[2.1] === 'object' && data[2.1].selectedOptions) {
+                text += `質問2.1：${data[2.1].selectedOptions.join('、')}`;
+                // 追加テキストがある場合は表示
+                if (data[2.1].additionalText) {
+                    text += `、その他: ${data[2.1].additionalText}`;
+                }
+                text += '<br>';
+            } else {
+                // 文字列の場合はそのまま表示
+                text += `質問2.1：${data[2.1]}<br>`;
+            }
         }
         
         // 気持ちのつらさ
         if (data[3]) {
-            // 値が7以上かチェック
-            const needsAttention = parseInt(data[3]) >= 7;
-            if (needsAttention) hasAlert = true;
-            text += `設問3：${data[3]}${needsAttention ? '　●' : ''}\n`;
+            text += `質問3：${data[3]}<br>`;
         }
         
         // 相談を希望するもの
         if (data[4] && data[4].selectedOptions) {
-            text += `設問4：${data[4].selectedOptions.join('、')}\n`;
+            text += `質問4：${data[4].selectedOptions.join('、')}<br>`;
         }
         
         return text;
@@ -1149,37 +1168,49 @@ $(document).ready(function() {
         const dateStr = `${today.getFullYear()}/${String(today.getMonth() + 1).padStart(2, '0')}/${String(today.getDate()).padStart(2, '0')}`;
         
         let text = `回答日：${dateStr}\n`;
-        text += `記入者：${relationshipAnswer}\n\n`;
-        
-        // アラートが必要かどうかを確認
-        let hasAlert = false;
+        text += `記入者：${relationshipAnswer}\n`;
         
         // 相談したい事項
         if (data[1.1] && data[1.1].selectedOptions) {
-            text += `設問1.1：${data[1.1].selectedOptions.join('、')}\n`;
+            text += `質問1.1：${data[1.1].selectedOptions.join('、')}\n`;
         }
         
         // 自由記述
         if (data[1]) {
-            // 全角換算で10文字以上かチェック（簡易的な計算）
-            const hasLongText = data[1].length >= 10;
-            if (hasLongText) hasAlert = true;
-            text += `設問1.1：${data[1]}${hasLongText ? '　●' : ''}\n`;
+            text += `質問1：${data[1]}\n`;
         }
         
         // 身体症状のレベル
         if (data[2]) {
             // 数値のみ抽出（「4: 我慢できない...」から「4」の部分を取り出す）
             const symptomLevel = data[2].split(':')[0].trim();
-            // 値が2以上かチェック
-            const needsAttention = parseInt(symptomLevel) >= 2;
-            if (needsAttention) hasAlert = true;
-            text += `設問2：${symptomLevel}${needsAttention ? '　●' : ''}\n`;
+            text += `質問2：${symptomLevel}\n`;
+        }
+        
+        // 症状詳細
+        if (data[2.1]) {
+            // オブジェクト形式の場合は selectedOptions を表示
+            if (typeof data[2.1] === 'object' && data[2.1].selectedOptions) {
+                text += `質問2.1：${data[2.1].selectedOptions.join('、')}`;
+                // 追加テキストがある場合は表示
+                if (data[2.1].additionalText) {
+                    text += `、その他: ${data[2.1].additionalText}`;
+                }
+                text += '\n';
+            } else {
+                // 文字列の場合はそのまま表示
+                text += `質問2.1：${data[2.1]}\n`;
+            }
+        }
+        
+        // 気持ちのつらさ
+        if (data[3]) {
+            text += `質問3：${data[3]}\n`;
         }
         
         // 相談を希望するもの
         if (data[4] && data[4].selectedOptions) {
-            text += `設問4：${data[4].selectedOptions.join('、')}\n`;
+            text += `質問4：${data[4].selectedOptions.join('、')}\n`;
         }
         
         return text;
@@ -1187,7 +1218,29 @@ $(document).ready(function() {
 
     // QRコード生成関数
     function generateQRCode(text) {
-        // この関数はQRコード生成のためのものです。実装は必要に応じて行ってください。
+        // QRコードを生成
+        $('#qrcode').empty();
+        $('#qrcode').append('<h3>QRコード</h3>');
+        $('#qrcode').append('<p>このQRコードをスキャンすると回答データが取得できます。</p>');
+        
+        // UTF-8からShift_JISに変換
+        const utf8Array = Encoding.stringToCode(text);
+        const sjisArray = Encoding.convert(utf8Array, {
+            to: 'SJIS',
+            from: 'UNICODE'
+        });
+        
+        // バイナリ文字列に変換
+        const sjisStr = Encoding.codeToString(sjisArray);
+        
+        const $qrDiv = $('<div></div>');
+        $qrDiv.qrcode({
+            text: sjisStr,
+            width: 256,
+            height: 256
+        });
+        
+        $('#qrcode').append($qrDiv);
     }
     
     // 音声読み上げ機能
