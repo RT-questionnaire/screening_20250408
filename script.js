@@ -332,7 +332,7 @@ $(document).ready(function() {
                 optionsText += '、';
             }
         });
-        optionsText += 'です。';
+        optionsText += '、です。';
         
         // 音声読み上げボタンを質問のメッセージに追加
         const $messageContent = $('.message.bot:last-child .message-content');
@@ -441,9 +441,6 @@ $(document).ready(function() {
         const $optionsDiv = $('<div class="options"></div>');
         let selectedOption = null;
         
-        // 最後の選択肢と読み上げボタンを一緒に配置するための行
-        const $lastOptionRow = $('<div class="option-row"></div>');
-        
         question.options.forEach((option, index) => {
             const $button = $('<button class="option-button"></button>').text(option);
             
@@ -472,33 +469,32 @@ $(document).ready(function() {
                         setTimeout(() => {
                             currentQuestionIndex++;
                             showQuestion(currentQuestionIndex);
+                            // スクロール処理を追加
+                            scrollToLatestContent();
                         }, 800);
                     }
                 }
             });
             
-            // 最後の選択肢の場合は特別な処理
-            if (index === question.options.length - 1) {
-                // 読み上げボタンを作成
-                const $optionsSpeechButton = $('<button class="options-speech-button" aria-label="選択肢を読み上げる"></button>');
-                $optionsSpeechButton.on('click', function() {
-                    toggleSpeech(this, optionsText);
-                });
-                
-                // 最後の選択肢と読み上げボタンを同じ行に追加
-                $lastOptionRow.append($button);
-                $lastOptionRow.append($optionsSpeechButton);
-                $optionsDiv.append($lastOptionRow);
-            } else {
-                // 最後以外の選択肢は通常通り追加
-                $optionsDiv.append($button);
-            }
+            // 最後の選択肢に関する特別な処理を削除
+            // すべての選択肢を通常通り追加
+            $optionsDiv.append($button);
         });
         
         // 質問ID 0または2の場合は確定ボタンを追加
         let $confirmButton;
+        
         if (question.id === 0 || question.id === 2) {
+            // 確定ボタンと読み上げボタンを含むコンテナを作成
+            const $buttonContainer = $('<div class="confirm-buttons-container"></div>');
+            
             $confirmButton = $('<button class="numeric-confirm" disabled>確定</button>');
+            
+            // 読み上げボタンを作成
+            const $optionsSpeechButton = $('<button class="options-speech-button" aria-label="選択肢を読み上げる"></button>');
+            $optionsSpeechButton.on('click', function() {
+                toggleSpeech(this, optionsText);
+            });
             
             $confirmButton.on('click', function() {
                 if (selectedOption) {
@@ -541,7 +537,12 @@ $(document).ready(function() {
                 }
             });
             
-            $optionsDiv.append($confirmButton);
+            // 確定ボタンと読み上げボタンをコンテナに追加
+            $buttonContainer.append($confirmButton);
+            $buttonContainer.append($optionsSpeechButton);
+            
+            // コンテナをオプションDivに追加
+            $optionsDiv.append($buttonContainer);
         }
         
         // 余白を確保するための空のdivを追加
@@ -605,34 +606,29 @@ $(document).ready(function() {
             }
         });
         
-        // 最後の通常選択肢と読み上げボタンを一緒に配置するための行
-        const $lastNormalOptionRow = $('<div class="option-row"></div>');
+        // 最後のオプションと読み上げボタン用の行を削除
         
-        // 通常オプションを追加
         normalOptions.forEach((option, index) => {
             const $button = $('<button class="option-button"></button>').text(option);
             
             $button.on('click', function() {
-                // 他の特殊選択肢（「特になし」など）が選択されていれば解除
-                const $specialOptionsContainer = $inputContainer.find('.options.special-options');
-                specialOptions.forEach(specialOption => {
-                    if ($specialOptionsContainer.length > 0) {
-                        const $specialButton = $specialOptionsContainer.find('.option-button').filter(function() {
-                            return $(this).text() === specialOption;
-                        });
-                        if ($specialButton.hasClass('selected')) {
-                            $specialButton.removeClass('selected');
-                            const index = selectedOptions.indexOf(specialOption);
-                            if (index > -1) {
-                                selectedOptions.splice(index, 1);
-                            }
+                const isSelected = $(this).hasClass('selected');
+                
+                // 特殊オプションが選択されていたら、それをクリア
+                if (!isSelected && specialOptionsList.length > 0) {
+                    $inputContainer.find('.special-options .option-button').removeClass('selected');
+                    // 「特になし」等が含まれていたら削除
+                    for (let i = selectedOptions.length - 1; i >= 0; i--) {
+                        if (specialOptions.includes(selectedOptions[i])) {
+                            selectedOptions.splice(i, 1);
                         }
                     }
-                });
+                }
                 
-                // 複数選択可能なのでトグルで選択/非選択を切り替え
-                if ($(this).hasClass('selected')) {
+                // この選択肢の選択状態をトグル
+                if (isSelected) {
                     $(this).removeClass('selected');
+                    // selectedOptionsから削除
                     const index = selectedOptions.indexOf(option);
                     if (index > -1) {
                         selectedOptions.splice(index, 1);
@@ -650,22 +646,8 @@ $(document).ready(function() {
                 }
             });
             
-            // 最後の選択肢の場合は特別な処理
-            if (index === normalOptions.length - 1) {
-                // 読み上げボタンを作成
-                const $optionsSpeechButton = $('<button class="options-speech-button" aria-label="選択肢を読み上げる"></button>');
-                $optionsSpeechButton.on('click', function() {
-                    toggleSpeech(this, optionsText);
-                });
-                
-                // 最後の選択肢と読み上げボタンを同じ行に追加
-                $lastNormalOptionRow.append($button);
-                $lastNormalOptionRow.append($optionsSpeechButton);
-                $optionsDiv.append($lastNormalOptionRow);
-            } else {
-                // 最後以外の選択肢は通常通り追加
-                $optionsDiv.append($button);
-            }
+            // 最後の選択肢の特別処理を削除、すべてのボタンを通常通り追加
+            $optionsDiv.append($button);
         });
         
         $inputContainer.append($optionsDiv);
@@ -674,14 +656,9 @@ $(document).ready(function() {
         let $textInput;
         if (question.id === 1.1 || question.id === 2.1) {
             const $textInputWrapper = $('<div class="text-input-wrapper"></div>');
-            let placeholder = question.id === 1.1 
-                ? "そのほか、気になっていること、心配していることがあればご記入下さい"
-                : "その他の症状があればご記入下さい";
-            $textInput = $('<textarea class="text-input" rows="3"></textarea>').attr('placeholder', placeholder);
-            $textInputWrapper.append($textInput);
-            $inputContainer.append($textInputWrapper);
+            $textInput = $('<textarea class="text-input" rows="2" placeholder="その他の症状がある場合はこちらに入力してください"></textarea>');
             
-            // テキスト入力の変更を監視
+            // テキスト入力に応じて確定ボタンの有効/無効を切り替え
             $textInput.on('input', function() {
                 if (selectedOptions.length > 0 || $(this).val().trim()) {
                     $confirmButton.prop('disabled', false);
@@ -689,6 +666,9 @@ $(document).ready(function() {
                     $confirmButton.prop('disabled', true);
                 }
             });
+            
+            $textInputWrapper.append($textInput);
+            $inputContainer.append($textInputWrapper);
         }
         
         // 特殊オプション（「特になし」など）をテキストボックスの下に追加
@@ -722,15 +702,23 @@ $(document).ready(function() {
                     }
                 });
                 
-                // すべての特殊選択肢を通常通り追加（読み上げボタンなし）
                 $specialOptionsDiv.append($button);
             });
             
             $inputContainer.append($specialOptionsDiv);
         }
         
+        // 確定ボタンと読み上げボタンを含むコンテナを作成
+        const $buttonContainer = $('<div class="confirm-buttons-container"></div>');
+        
         // 確定ボタン
         const $confirmButton = $('<button class="multiple-choice-confirm" disabled>確定</button>');
+        
+        // 読み上げボタンを作成
+        const $optionsSpeechButton = $('<button class="options-speech-button" aria-label="選択肢を読み上げる"></button>');
+        $optionsSpeechButton.on('click', function() {
+            toggleSpeech(this, optionsText);
+        });
         
         $confirmButton.on('click', function() {
             // 少なくとも1つは選択されているか、テキスト入力がある場合のみ処理
@@ -783,7 +771,13 @@ $(document).ready(function() {
             }
         });
         
-        $inputContainer.append($confirmButton);
+        // 確定ボタンと読み上げボタンをコンテナに追加
+        $buttonContainer.append($confirmButton);
+        $buttonContainer.append($optionsSpeechButton);
+        
+        // コンテナを入力コンテナに追加
+        $inputContainer.append($buttonContainer);
+        
         $('#chatMessages').append($inputContainer);
         scrollToLatestContent();
     }
@@ -1110,12 +1104,12 @@ $(document).ready(function() {
     function generateFormattedText(data) {
         let text = "";
 
-        // 調査日時
-        text += `調査日時：${new Date().toLocaleString('ja-JP')}<br>`;
+        // 回答日時
+        text += `ご回答日時：${new Date().toLocaleString('ja-JP')}<br>`;
 
         // 回答者
         if (relationshipAnswer) {
-            text += `回答者：${relationshipAnswer}<br>`;
+            text += `ご回答者：${relationshipAnswer}<br>`;
         }
 
         // 相談したい事項

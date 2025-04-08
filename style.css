@@ -120,7 +120,7 @@ body {
 }
 
 .option-button {
-    background-color: #f7f7f7;
+    background-color: #ffffff;
     border: 2px solid #e6e6e6;
     border-radius: 20px;
     padding: 8px 14px;
@@ -131,19 +131,13 @@ body {
     font-size: 18px;
     transition: all 0.3s ease;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    position: relative; /* 読み上げボタン配置のための相対位置 */
-    padding-right: 36px; /* 読み上げボタン用のスペース */
+    position: relative;
+    padding-right: 14px; /* 読み上げボタン用のスペースを削除 */
 }
 
-/* 選択肢内の読み上げボタン用スタイル */
+/* 選択肢内の読み上げボタン用スタイルを削除（不要になるため） */
 .option-button .speech-button {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    margin: 0;
-    width: 30px;
-    height: 30px;
+    display: none; /* 非表示にする */
 }
 
 .option-button:hover {
@@ -216,17 +210,17 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 15px 0 15px 20px;
+    margin: 15px 0 15px 10px;
     width: 90%;
-    padding: 15px; /* 大きめのパディング */
-    background-color: #f7f7f7;
+    padding: 0; /* パディングを削除 */
+    background-color: transparent; /* 背景を透明に */
     border-radius: 10px;
 }
 
 .vas-slider {
     width: 90%;
     height: 25px; /* 大きめのスライダー */
-    margin: 20px 0;
+    margin: 10px 0;
     -webkit-appearance: none;
     appearance: none;
     background: #f2f2f2;
@@ -478,7 +472,7 @@ h3 {
     margin-top: 10px;
     transition: all 0.3s ease;
     display: block;
-    margin-left: 20px;
+    margin-left: 10px;
 }
 
 .text-submit:hover {
@@ -581,10 +575,10 @@ h3 {
 .options-speech-button {
     background-color: transparent;
     color: #06c755; /* LINE風の緑色 */
-    border: 1px solid #06c755;
-    width: 36px;
-    height: 36px;
-    font-size: 16px;
+    border: none; /* 枠線を削除 */
+    width: 42px; /* 大きさを他の読み上げボタンと同じに */
+    height: 42px; /* 大きさを他の読み上げボタンと同じに */
+    font-size: 22px; /* フォントサイズを大きく */
     cursor: pointer;
     border-radius: 50%;
     display: inline-flex;
@@ -592,7 +586,7 @@ h3 {
     justify-content: center;
     transition: all 0.2s;
     padding: 0;
-    margin-left: 10px;
+    margin: 0;
     vertical-align: middle;
     position: static;
 }
@@ -634,11 +628,11 @@ h3 {
 
 /* 数値ボタンのスタイル */
 .numeric-buttons-container {
-    margin: 15px 20px;
-    padding: 15px;
-    background-color: white;
+    margin: 15px 10px;
+    padding: 0; /* パディングを削除 */
+    background-color: transparent; /* 背景を透明に */
     border-radius: 10px;
-    border: 1px solid #ddd;
+    border: none; /* 枠線を削除 */
     overflow: hidden;
 }
 
@@ -675,8 +669,8 @@ h3 {
     display: flex;
     justify-content: center;
     flex-wrap: nowrap;
-    margin-bottom: 15px;
-    padding-bottom: 5px;
+    margin: 5px 0 10px 0;
+    padding-bottom: 0;
     width: 100%;
 }
 
@@ -737,7 +731,7 @@ h3 {
     cursor: pointer;
     transition: all 0.3s ease;
     display: block;
-    margin: 15px auto 5px auto;
+    margin: 10px auto 5px auto;
 }
 
 .numeric-confirm:hover {
@@ -756,10 +750,10 @@ h3 {
 /* 症状ボタンのスタイル */
 .symptom-buttons-container {
     margin: 10px 0;
-    padding: 15px;
-    background-color: white;
+    padding: 0; /* パディングを削除 */
+    background-color: transparent; /* 背景を透明に */
     border-radius: 10px;
-    border: 1px solid #ddd;
+    border: none; /* 枠線を削除 */
 }
 
 .symptom-label {
@@ -773,8 +767,9 @@ h3 {
     display: flex;
     flex-flow: row wrap;
     gap: 8px;
-    margin-top: 8px;
-    width: 100%;
+    margin-top: 5px;
+    margin-left: 10px;
+    width: 95%;
 }
 
 .symptom-button {
@@ -818,10 +813,10 @@ h3 {
 /* 複数選択肢のスタイル */
 .multiple-choice-container {
     margin: 10px 10px;
-    padding: 10px;
-    background-color: white;
+    padding: 0; /* パディングを削除 */
+    background-color: transparent; /* 背景を透明に */
     border-radius: 10px;
-    border: 1px solid #ddd;
+    border: none; /* 枠線を削除 */
 }
 
 .text-input-wrapper {
@@ -842,7 +837,7 @@ h3 {
     cursor: pointer;
     transition: all 0.3s ease;
     display: block;
-    margin: 15px auto 5px auto;
+    margin: 10px auto 5px auto;
 }
 
 .multiple-choice-confirm:hover {
@@ -864,4 +859,47 @@ h3 {
     align-items: center;
     width: 100%;
     margin-bottom: 5px;
+}
+
+/* 確定ボタンと読み上げボタンを横並びにするコンテナ */
+.confirm-buttons-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px auto;
+    gap: 10px;
+}
+
+/* 確定ボタンのスタイル調整 */
+.numeric-confirm {
+    margin: 0;
+    flex: 1;
+    max-width: 200px;
+}
+
+/* 複数選択肢の確定ボタンのスタイル調整 */
+.multiple-choice-confirm {
+    margin: 0;
+    flex: 1;
+    max-width: 200px;
+}
+
+/* 選択肢読み上げボタンのスタイル調整 */
+.options-speech-button {
+    background-color: transparent;
+    color: #06c755; /* LINE風の緑色 */
+    border: none; /* 枠線を削除 */
+    width: 42px; /* 大きさを他の読み上げボタンと同じに */
+    height: 42px; /* 大きさを他の読み上げボタンと同じに */
+    font-size: 22px; /* フォントサイズを大きく */
+    cursor: pointer;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    padding: 0;
+    margin: 0;
+    vertical-align: middle;
+    position: static;
 } 
