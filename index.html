@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生活のしやすさに関する質問票</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdn.rawgit.com/jeromeetienne/jquery-qrcode/master/src/qrcode.js"></script>
+    <script src="https://cdn.rawgit.com/jeromeetienne/jquery-qrcode/master/src/jquery.qrcode.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/encoding-japanese/encoding.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- 開始画面 -->
+        <div class="start-screen" id="startScreen">
+            <h2>生活のしやすさに関する質問票</h2>
+            <p class="intro-message">この度はアプリでの問診にご協力くださいましてありがとうございます。<br>
+            これは生活の中で患者さんやご家族が感じるつらさを早期に把握し、<br>必要に応じて専門スタッフがサポートするための質問票です。<br>
+            以下のボタンを押して、回答を開始してください。</p>
+            <div class="button-container">
+                <button id="startButton">回答開始</button>
+            </div>
+        </div>
+        
+        <div id="chatInterface" style="display: none;">
+            <div class="chat-header">
+                生活のしやすさに関する質問票
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <!-- メッセージはここに動的に追加されます -->
+            </div>
+        </div>
+        
+        <div class="result-section" id="resultSection" style="display: none;">
+            <h2>回答結果</h2>
+            <div class="result-message" id="resultMessage"></div>
+            <div class="mail-container" id="mailContainer"></div>
+            <div id="qrcode"></div>
+            <div id="resultSummary" style="display: none;"></div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
